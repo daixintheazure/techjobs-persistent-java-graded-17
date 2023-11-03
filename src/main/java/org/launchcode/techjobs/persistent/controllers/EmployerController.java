@@ -41,6 +41,7 @@ public class EmployerController {
         if (errors.hasErrors()) {
             return "employers/add";
         }
+        System.out.println(newEmployer);
         employerRepository.save(newEmployer);
 
         return "redirect:employers";

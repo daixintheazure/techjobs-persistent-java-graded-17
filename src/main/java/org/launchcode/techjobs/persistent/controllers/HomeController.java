@@ -2,7 +2,9 @@ package org.launchcode.techjobs.persistent.controllers;
 
 import jakarta.validation.Valid;
 import org.launchcode.techjobs.persistent.models.Job;
+import org.launchcode.techjobs.persistent.models.Skill;
 import org.launchcode.techjobs.persistent.models.data.EmployerRepository;
+import org.launchcode.techjobs.persistent.models.data.JobRepository;
 import org.launchcode.techjobs.persistent.models.data.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +24,10 @@ public class HomeController {
 
     @Autowired
     private EmployerRepository employerRepository;
+    @Autowired
     private SkillRepository skillRepository;
+    @Autowired
+    private JobRepository jobRepository;
 
     @RequestMapping("/")
     public String index(Model model) {
@@ -37,20 +42,26 @@ public class HomeController {
     public String displayAddJobForm(Model model) {
 	model.addAttribute("title", "Add Job");
         model.addAttribute("employers", employerRepository.findAll());
+        model.addAttribute("skills", skillRepository.findAll());
         model.addAttribute(new Job());
         return "add";
     }
 
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                       Errors errors, Model model, @RequestParam int employerId) {
+                                       Errors errors, Model model, @RequestParam int employerId,
+                                    @RequestParam List<Integer> skills) {
 
         if (errors.hasErrors()) {
 	    model.addAttribute("title", "Add Job");
             return "add";
         }
+        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+        newJob.setSkills(skillObjs);
+        model.addAttribute("Skills", skillObjs);
         model.addAttribute("employerId", employerRepository.findAll());
         model.addAttribute("employers", employerRepository.findById(employerId));
+        jobRepository.save(newJob);
 
         return "redirect:";
     }
