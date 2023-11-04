@@ -17,7 +17,8 @@ public class Employer extends AbstractEntity {
     @Size(min = 3, message = "Location must be at least 3 characters.")
     private String location;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employer")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employer_id")
     private final List<Job> jobs = new ArrayList<>();
 
     public Employer() {}
@@ -32,5 +33,9 @@ public class Employer extends AbstractEntity {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public List<Job> getJobs() {
+        return jobs;
     }
 }
