@@ -8,4 +8,4 @@ drop table job;
 select * from skill
 left join job_skills on job_skills.skills_id = skill.id
 where job_skills.jobs_id is not null
-order by name asc
+order by name asc;
